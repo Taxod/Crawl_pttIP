@@ -1,11 +1,14 @@
 import requests
 from bs4 import BeautifulSoup
 
+def Get_LastPage_Url(html_soup):
+    x = html_soup.find_all('a','btn wide',limit=2)
+    return "https://www.ptt.cc" + x[1].get('href')
+
 def find_PageHtmlText(url):
     resp = requests.get(url)
     soup = BeautifulSoup(resp.text, 'html.parser')
     return soup
-
 
 def find_ip_id(Html_soup):
     ID_href = {}
@@ -23,7 +26,10 @@ def find_ip_id(Html_soup):
                 break
             if tmp_ip.string.find(' 140.') != -1:
                 tmp_id = tmp.find('span', 'article-meta-value')
-                ID_href[tmp_id.string[:tmp_id.string.find(' ')]] = tmp_ip.string[tmp_ip.string.find('140'):tmp_ip.string.find('\\')]
+                if ID_href.get(tmp_id.string[:tmp_id.string.find(' ')]) == None:
+                    ID_href[tmp_id.string[:tmp_id.string.find(' ')]] = tmp_ip.string[tmp_ip.string.find('140'):tmp_ip.string.find('\\')]
+                else:
+                    
                 print(tmp_id.string[:tmp_id.string.find(' ')],end=' ')
                 print(tmp_ip.string[tmp_ip.string.find('140'):],end ='')
     return ID_href
@@ -31,8 +37,5 @@ def find_ip_id(Html_soup):
 url = 'https://www.ptt.cc/bbs/prozac/index650.html'
 ID_href = find_ip_id(find_PageHtmlText(url))
 
-def Get_LastPage_Url(html_soup):
-    x = html_soup.find_all('a','btn wide',limit=2)
-    return "https://www.ptt.cc" + x[1].get('href')
 print("end-----------")
 print(ID_href)
