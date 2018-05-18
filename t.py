@@ -10,8 +10,7 @@ def find_PageHtmlText(url):
     soup = BeautifulSoup(resp.text, 'html.parser')
     return soup
 
-def find_ip_id(Html_soup):
-    ID_href = {}
+def find_ip_id(Html_soup,ID_href):
     article_title_href = Html_soup.find_all('div', 'title')
     for i in article_title_href:
         A_tag =  i.find('a')
@@ -26,16 +25,20 @@ def find_ip_id(Html_soup):
                 break
             if tmp_ip.string.find(' 140.') != -1:
                 tmp_id = tmp.find('span', 'article-meta-value')
-                if ID_href.get(tmp_id.string[:tmp_id.string.find(' ')]) == None:
-                    ID_href[tmp_id.string[:tmp_id.string.find(' ')]] = tmp_ip.string[tmp_ip.string.find('140'):tmp_ip.string.find('\\')]
+                ID = tmp_id.string[:tmp_id.string.find(' ')]
+                IP = tmp_ip.string[tmp_ip.string.find('140'):tmp_ip.string.find('\\')]
+                if ID_href.get(ID) == None:
+                    ID_href[ID] = [IP]
                 else:
-                    
+                    ID_href[ID] = ID_href.get(ID).append(IP)
                 print(tmp_id.string[:tmp_id.string.find(' ')],end=' ')
                 print(tmp_ip.string[tmp_ip.string.find('140'):],end ='')
     return ID_href
 
-url = 'https://www.ptt.cc/bbs/prozac/index650.html'
-ID_href = find_ip_id(find_PageHtmlText(url))
+ID_href = {}
+for i in range(500,650):
+    url = "https://www.ptt.cc/bbs/prozac/index"+ str(i) +".html"
+    ID_href = find_ip_id(find_PageHtmlText(url),ID_href)
 
 print("end-----------")
 print(ID_href)
