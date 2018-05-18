@@ -28,15 +28,17 @@ def find_ip_id(Html_soup,ID_href):
                 ID = tmp_id.string[:tmp_id.string.find(' ')]
                 IP = tmp_ip.string[tmp_ip.string.find('140'):tmp_ip.string.find('\\')]
                 if ID_href.get(ID) == None:
-                    ID_href[ID] = [IP]
+                    ID_href[ID] = [[IP]+[url_string]]
+                    print(ID_href)
                 else:
-                    ID_href[ID] = ID_href.get(ID).append(IP)
+                    ID_href[ID] = (ID_href.get(ID)) + [[IP]+[url_string]]
+                    print(ID_href)
                 print(tmp_id.string[:tmp_id.string.find(' ')],end=' ')
                 print(tmp_ip.string[tmp_ip.string.find('140'):],end ='')
     return ID_href
 
 ID_href = {}
-for i in range(500,650):
+for i in range(500,515):
     url = "https://www.ptt.cc/bbs/prozac/index"+ str(i) +".html"
     ID_href = find_ip_id(find_PageHtmlText(url),ID_href)
 
