@@ -23,15 +23,16 @@ def find_ip_id(Html_soup):
                 break
             if tmp_ip.string.find(' 140.') != -1:
                 tmp_id = tmp.find('span', 'article-meta-value')
-                
+                ID_href[tmp_id.string[:tmp_id.string.find(' ')]] = tmp_ip.string[tmp_ip.string.find('140'):tmp_ip.string.find('\\')]
                 print(tmp_id.string[:tmp_id.string.find(' ')],end=' ')
                 print(tmp_ip.string[tmp_ip.string.find('140'):],end ='')
-
+    return ID_href
 
 url = 'https://www.ptt.cc/bbs/prozac/index650.html'
-find_ip_id(find_PageHtmlText(url))
+ID_href = find_ip_id(find_PageHtmlText(url))
 
-def Get_LastPage_Url(html_text):
-    x = html_text.find_all('a','btn wide',limit=2)
+def Get_LastPage_Url(html_soup):
+    x = html_soup.find_all('a','btn wide',limit=2)
     return "https://www.ptt.cc" + x[1].get('href')
 print("end-----------")
+print(ID_href)
