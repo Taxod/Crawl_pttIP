@@ -1,16 +1,21 @@
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup#需要額外安裝
 
+
+#得到ptt上一頁的url
 def Get_LastPage_Url(html_soup):
     x = html_soup.find_all('a','btn wide',limit=2)
     return "https://www.ptt.cc" + x[1].get('href')
 
+
+#回傳soup，soup.text是html的文字檔(soup是名字可以亂取)
 def find_PageHtmlText(url):
     resp = requests.get(url)
     soup = BeautifulSoup(resp.text, 'html.parser')
     return soup
 
 def find_ip_id(Html_soup,ID_href):
+    #tag跟class'div' 'title'
     article_title_href = Html_soup.find_all('div', 'title')
     for i in article_title_href:
         A_tag =  i.find('a')
@@ -23,7 +28,7 @@ def find_ip_id(Html_soup,ID_href):
                 break
             if tmp_ip.string == None:
                 break
-            if tmp_ip.string.find(' 140.') != -1:
+            if tmp_ip.string.find(' 140.112') != -1:
                 tmp_id = tmp.find('span', 'article-meta-value')
                 ID = tmp_id.string[:tmp_id.string.find(' ')]
                 IP = tmp_ip.string[tmp_ip.string.find('140'):tmp_ip.string.find('\\')]
@@ -34,11 +39,18 @@ def find_ip_id(Html_soup,ID_href):
     return ID_href
 
 ID_href = {}
-
-
-for i in range(500,515):
-    url = "https://www.ptt.cc/bbs/prozac/index"+ str(i) +".html"
+# for i in range(500,515):
+#     url = "https://www.ptt.cc/bbs/prozac/index"+ str(i) +".html"
+#     ID_href = find_ip_id(find_PageHtmlText(url),ID_href)
+#
+count = 0
+url = "https://www.ptt.cc/bbs/prozac/index.html"
+while (url != None) & (count < 10000):
     ID_href = find_ip_id(find_PageHtmlText(url),ID_href)
-
-print(ID_href)
-print("end-----------")
+    url =  Get_LastPage_Url(find_PageHtmlText(url))
+    count += 1
+    print(count)#測試用--
+    print(ID_href)
+    #----
+print(ID_href)#結果
+print(count)#測試
