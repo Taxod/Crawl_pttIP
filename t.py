@@ -45,12 +45,16 @@ ID_href = {}
 #
 count = 0
 url = "https://www.ptt.cc/bbs/prozac/index.html"
-while (url != None) & (count < 10000):
+
+# while (url != None) & (count < 1000):
+while count < 1000:
     ID_href = find_ip_id(find_PageHtmlText(url),ID_href)
-    url =  Get_LastPage_Url(find_PageHtmlText(url))
-    count += 1
-    print(count)#測試用--
-    print(ID_href)
-    #----
+    if url != "https://www.ptt.cc/bbs/prozac/index1.html":
+        url =  Get_LastPage_Url(find_PageHtmlText(url))
+        count += 1
+        print(count)#測試用--
+    else:
+        break
 print(ID_href)#結果
-print(count)#測試
+print("-------")
+# print(count)#測試
